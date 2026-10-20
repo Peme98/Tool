@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Aventurische Werkzeuge</title>
+<style>
+:root{--bg:#17130f;--header:#1c1814;--surface:#221d18;--border:#6e573b;--gold:#c99a3b;--gold-light:#e4bd62;--text:#f5f1e8;--muted:#bdb3a6}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}
+body{display:flex;flex-direction:column;overflow:hidden;color:var(--text);background:radial-gradient(circle at 20% 0%,rgba(181,130,49,.14),transparent 32%),var(--bg);font-family:"Segoe UI","Trebuchet MS",Arial,sans-serif}
+header{display:flex;align-items:center;gap:12px;flex:0 0 auto;min-height:72px;padding:14px 24px;background:rgba(28,24,20,.97);border-bottom:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,.2)}
+.logo{display:grid;place-items:center;width:42px;height:42px;flex:0 0 auto;color:var(--gold-light);background:rgba(201,154,59,.12);border:1px solid rgba(201,154,59,.45);border-radius:12px;font-size:23px}
+h1{margin:0;font-size:clamp(17px,2vw,22px);letter-spacing:.06em}header p{margin:3px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;align-items:center;gap:8px;flex:0 0 auto;padding:10px 24px;overflow-x:auto;scrollbar-width:thin;background:var(--surface);border-bottom:1px solid var(--border)}
+.tab{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;min-height:42px;padding:10px 16px;color:var(--muted);background:transparent;border:1px solid transparent;border-radius:9px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.05);border-color:var(--border)}.tab.active{color:#211a12;background:var(--gold);border-color:var(--gold)}
+.tab:focus-visible{outline:3px solid rgba(228,189,98,.35);outline-offset:2px}
+main{position:relative;flex:1 1 auto;min-width:0;min-height:0;background:var(--bg)}
+iframe{display:none;width:100%;height:100%;border:0;background:var(--bg)}iframe.active{display:block}
+.loading{position:absolute;inset:0;z-index:3;display:none;place-items:center;color:var(--gold-light);background:rgba(23,19,15,.94);font-weight:700}.loading.visible{display:grid}
+@media(max-width:700px){header{min-height:62px;padding:10px 14px}.logo{width:38px;height:38px}header p{display:none}nav{padding:8px 10px}.tab{min-height:39px;padding:9px 13px;font-size:13px}}
+</style>
+</head>
+<body>
+<header><div class="logo" aria-hidden="true">⚔</div><div><h1>AVENTURISCHE WERKZEUGE</h1><p>DSA 5 · Digitale Spielhilfe</p></div></header>
+<nav id="tabs" role="tablist" aria-label="Werkzeugauswahl"></nav>
+<main id="content"><div id="loading" class="loading" aria-live="polite">Werkzeug wird geladen …</div></main>
+<script>
+"use strict";
+const tools=[
+{id:"heldenverwaltung",label:"Heldenverwaltung",icon:"🛡️",file:"heldenverwaltung.html"},
+{id:"tagebuch",label:"Tagebuch",icon:"📖",file:"tagebuch.html"},
+{id:"rechner",label:"Rechner",icon:"🎲",file:"rechner.html"},
+{id:"kampfsimulator",label:"Kampfsimulator",icon:"⚔️",file:"kampfsimulator.html"},
+{id:"npc-generator",label:"NPC-Generator",icon:"🧙",file:"npc-generator.html"},
+{id:"pflanzensucher",label:"Pflanzensucher",icon:"🌿",file:"pflanzensucher.html"},
+{id:"stammbaum",label:"Stammbaum",icon:"🌳",file:"stammbaum.html"},
+{id:"baronieverwaltung",label:"Baronieverwaltung",icon:"🏰",file:"baronieverwaltung.html"}
+];
+const tabs=document.getElementById("tabs"),content=document.getElementById("content"),loading=document.getElementById("loading"),frames=new Map();
+function toolFromHash(){const id=decodeURIComponent(location.hash.replace(/^#/,""));return tools.find(t=>t.id===id)||tools[0]}
+function openTool(tool,changeHash=true){
+document.querySelectorAll(".tab").forEach(b=>{const active=b.dataset.id===tool.id;b.classList.toggle("active",active);b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1});
+frames.forEach(f=>f.classList.remove("active"));let frame=frames.get(tool.id);
+if(!frame){loading.classList.add("visible");frame=document.createElement("iframe");frame.title=tool.label;frame.src=tool.file;frame.dataset.id=tool.id;frame.addEventListener("load",()=>loading.classList.remove("visible"));content.appendChild(frame);frames.set(tool.id,frame)}
+frame.classList.add("active");if(frame.contentDocument&&frame.contentDocument.readyState==="complete")loading.classList.remove("visible");
+if(changeHash&&location.hash!=="#"+tool.id)history.replaceState(null,"","#"+tool.id);document.title=tool.label+" · Aventurische Werkzeuge";
+}
+tools.forEach((tool,i)=>{const b=document.createElement("button");b.type="button";b.className="tab";b.dataset.id=tool.id;b.setAttribute("role","tab");b.setAttribute("aria-selected","false");b.tabIndex=i===0?0:-1;b.innerHTML=`<span aria-hidden="true">${tool.icon}</span><span>${tool.label}</span>`;b.addEventListener("click",()=>openTool(tool));tabs.appendChild(b)});
+window.addEventListener("hashchange",()=>openTool(toolFromHash(),false));openTool(toolFromHash(),false);
+</script>
+</body>
+</html>

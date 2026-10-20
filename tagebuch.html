@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aventurische Chronik — DSA 5</title>
+<style>
+:root{--ink:#241b15;--muted:#756658;--paper:#f4ead5;--paper2:#e9d8b8;--line:#cbb894;--red:#7c342c;--gold:#9c773d;--green:#4e6349;--shadow:0 8px 24px #26190f18}
+*{box-sizing:border-box}body{margin:0;background:#29231f;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background-image:radial-gradient(ellipse at top,#554437 0,transparent 55%)}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid #bba47e;background:#f8eedb;color:var(--ink);padding:.55rem .8rem;border-radius:7px}button:hover{filter:brightness(.97);border-color:var(--gold)}button.primary{background:var(--red);color:#fff5e5;border-color:#60261f}button.subtle{background:transparent}button.danger{color:#8d2924}
+header{max-width:1450px;margin:auto;padding:24px 22px 16px;color:#f5e8ce;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:13px}.sigil{width:52px;height:52px;border:1px solid #c7a66d;border-radius:50%;display:grid;place-items:center;font-size:27px;color:#e5c889}.brand h1{font-size:clamp(1.45rem,3vw,2.2rem);margin:0;font-weight:normal;letter-spacing:.03em}.brand p{margin:5px 0 0;color:#d7c3a3;font-size:.9rem}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}.header-actions button{background:#40352b;border-color:#776248;color:#f5e8ce}
+main{max-width:1450px;margin:0 auto;padding:0 22px 35px}.notice{padding:11px 14px;border:1px solid #8e754e;border-radius:8px;background:#3a3026;color:#e9d8b8;font: .88rem/1.5 system-ui,sans-serif;margin-bottom:16px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tabs button{background:#e4d2af;border-color:#b7a17a}.tabs button.active{background:#f4ead5;border-color:#f4ead5;font-weight:bold}
+.panel{background:var(--paper);border:1px solid #bba47e;border-radius:12px;box-shadow:var(--shadow);padding:18px;min-width:0}.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.9fr);gap:15px}.panel h2,.panel h3{margin:0 0 12px;font-weight:normal}.panel h2{font-size:1.4rem}.panel h3{font-size:1.12rem}.muted{color:var(--muted)}.small{font-size:.85rem}.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.monthbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.monthbar h2{margin:0;text-align:center}.monthbar .year{font-size:.9rem;color:var(--muted);margin-top:3px;text-align:center}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.weekday{text-align:center;color:var(--muted);font-size:.82rem;padding:6px 0}.day{min-height:73px;position:relative;text-align:left;padding:8px;background:#f8f0df;border-color:#d6c4a0;display:flex;flex-direction:column;gap:5px}.day.blank{visibility:hidden}.day.today{outline:2px solid var(--gold);outline-offset:-2px}.day.selected{background:#e7d2a9;border-color:var(--red)}
+.day.has-entry{box-shadow:inset 0 -4px 0 var(--red)}
+.day.has-quest:not(.has-entry){box-shadow:inset 0 -4px 0 var(--green)}
+.day.has-entry.has-quest{background:#eadbc0}
+.day .marks{min-height:1em}.day .num{font-size:1rem}.day .moon{font-size:.72rem;color:#78603a}.day .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:3px}.day .marks{font: .68rem system-ui,sans-serif;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.day.special{background:#e9d8d3}
+.detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.date-large{font-size:1.35rem;line-height:1.3}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#e5d6b8;font: .76rem system-ui,sans-serif;color:#59452e}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}.fact{padding:10px;border:1px solid #d6c4a0;border-radius:8px;background:#f8f0df}.fact b{display:block;font-size:.78rem;color:var(--muted);font-weight:normal;margin-bottom:4px}.fact span{font-size:.98rem}
+.entry,.quest-card,.event-card{border:1px solid #d6c4a0;border-radius:8px;padding:11px;margin:8px 0;background:#f8f0df}.entry h4,.quest-card h4{margin:0 0 5px;font-size:1rem}.entry p{margin:6px 0;white-space:pre-wrap;line-height:1.45}.entry-meta{font: .78rem system-ui,sans-serif;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}.tag{display:inline-block;border:1px solid #d0bc94;padding:2px 6px;border-radius:4px;font: .75rem system-ui,sans-serif;margin:3px 3px 0 0}
+form{display:grid;gap:11px}label{display:grid;gap:5px;font-size:.9rem;color:#5d4b3b}input,select,textarea{width:100%;padding:9px 10px;border:1px solid #cbb894;border-radius:7px;background:#fffaf0;color:var(--ink)}textarea{min-height:105px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #c6a66a;outline-offset:1px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.actions{display:flex;gap:7px;flex-wrap:wrap}.empty{padding:20px 10px;text-align:center;color:var(--muted);line-height:1.5}.section{margin-top:14px}.hidden{display:none!important}.list-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.list-tools input,.list-tools select{flex:1;min-width:150px}.status{font: .75rem system-ui,sans-serif;padding:3px 7px;border-radius:5px;background:#e4d8bd}.status.active{background:#dbe2cf;color:#34462f}.status.done{background:#d5dfd1;color:#31462f}.status.failed{background:#ead1ca;color:#7b2f25}.modal-overlay{position:fixed;inset:0;z-index:1000;background:#17120fd9;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}.modal-overlay.hidden{display:none!important}.modal-card{width:min(760px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--paper);border:1px solid #bba47e;border-radius:12px;box-shadow:0 18px 60px #0008;padding:20px}.modal-card h2{margin:0 0 14px;font-weight:normal}.modal-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.modal-top h2{margin:0}.footer{text-align:center;color:#c6b394;font: .8rem system-ui,sans-serif;padding:20px 0 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.day{min-height:61px;padding:6px}.panel{padding:14px}}
+@media(max-width:520px){main{padding:0 10px 24px}header{padding:17px 12px 13px}.panel{padding:12px}.calendar{gap:3px}.day{min-height:53px;padding:4px;font-size:.9rem}.day .moon{font-size:.65rem}.day .marks{display:none}.weekday{font-size:.72rem}.form-grid{grid-template-columns:1fr}.facts{gap:6px}.header-actions button{font-size:.82rem;padding:.45rem .55rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="sigil">✦</div><div><h1>Aventurische Chronik</h1><p>Kalender · Quests · Reisejournal · DSA 5</p></div></div>
+  <div class="header-actions">
+    <button id="exportBtn">↓ JSON exportieren</button>
+    <button id="importBtn">↑ JSON importieren</button>
+    <input id="importFile" type="file" accept=".json,application/json" hidden>
+  </div>
+</header>
+<main>
+  <div class="notice"><strong>Lokale Chronik:</strong> Deine Einträge werden in diesem Browser gespeichert. Exportiere regelmäßig eine JSON-Sicherung. Diese erste Version verwendet den aventurischen Zwölfgötterkalender; Mondphase und Wochentag sind als konfigurierbare Näherung markiert, bis eine verifizierte DSA-5-Referenztabelle hinterlegt wird.</div>
+  <nav class="tabs" aria-label="Bereiche">
+    <button class="active" data-tab="calendar">Kalender & Tageschronik</button>
+    <button data-tab="journal">Tagebuch</button>
+    <button data-tab="quests">Quests</button>
+    <button data-tab="travel">Reiseplaner</button>
+  </nav>
+
+  <section id="tab-calendar">
+    <div class="layout">
+      <div class="panel">
+        <div class="monthbar">
+          <button id="prevMonth" aria-label="Vorheriger Monat">←</button>
+          <div><h2 id="monthTitle">Praios</h2><div class="year" id="yearTitle">1046 BF</div></div>
+          <button id="nextMonth" aria-label="Nächster Monat">→</button>
+        </div>
+        <div class="toolbar" style="justify-content:space-between;margin-bottom:12px">
+          <div class="toolbar"><label style="display:flex;align-items:center;gap:6px">Jahr BF <input id="yearInput" type="number" min="1" max="9999" value="1046" style="width:95px"></label><button id="goToday">Zum gewählten Datum</button></div>
+          <button class="primary" id="newEntryBtn">＋ Eintrag</button>
+        </div>
+        <div class="calendar" id="calendarGrid"></div>
+        <p class="small muted">Die Monatsansicht zeigt 30 Tage; die fünf Namenlosen Tage werden separat zwischen Rahja und Praios geführt.</p>
+      </div>
+      <div class="panel">
+        <div class="detail-head"><div><div class="date-large" id="selectedDateLabel">1. Praios 1046 BF</div><div class="muted small" id="weekdayLabel">Aventurischer Tag</div></div><span class="pill" id="dayType">Kalendertag</span></div>
+        <div class="facts">
+          <div class="fact"><b>Mondphase</b><span id="moonLabel">—</span></div>
+          <div class="fact"><b>Jahreszeit / Abschnitt</b><span id="seasonLabel">Sommer</span></div>
+          <div class="fact"><b>Wetter</b><span id="weatherLabel">Nicht festgelegt</span></div>
+          <div class="fact"><b>Reise / Ort</b><span id="locationLabel">Kein Ort eingetragen</span></div>
+        </div>
+        <div class="toolbar"><button id="editDayBtn">Tagesdaten bearbeiten</button><button id="addQuestBtn">＋ Quest</button></div>
+        <div class="section"><h3>Chronik dieses Tages</h3><div id="dayEntries"></div></div>
+        <div class="section"><h3>Quests mit Bezug zu diesem Tag</h3><div id="dayQuests"></div></div>
+      </div>
+    </div>
+    <div class="modal-overlay hidden" id="entryModal" role="dialog" aria-modal="true" aria-labelledby="entryFormTitle">
+    <div class="modal-card" id="entryEditor"><div class="modal-top"><h2 id="entryFormTitle">Chronikeintrag anlegen</h2><button type="button" id="closeEntry" aria-label="Fenster schließen">✕</button></div>
+      <form id="entryForm">
+        <input type="hidden" id="entryId">
+        <div class="form-grid">
+          <label>Datum (aventurisch)<input id="entryDate" required placeholder="z. B. 18. Hesinde 1046 BF"></label>
+          <label>Titel<input id="entryTitle" required placeholder="z. B. Ein seltsamer Auftrag"></label>
+          <label>Ort<input id="entryLocation" placeholder="z. B. Gareth, Zum Tanzenden Pony"></label>
+          <label>Art<select id="entryType"><option>Spielabend</option><option>Reise</option><option>Quest-Ereignis</option><option>Begegnung</option><option>Notiz</option><option>Geheim (SL)</option></select></label>
+        </div>
+        <label>Was ist passiert?<textarea id="entryBody" required placeholder="Ereignisse, Entscheidungen, Hinweise, Konsequenzen …"></textarea></label>
+        <label>Beteiligte / NSC<input id="entryPeople" placeholder="z. B. Alrik, Praiosgeweihte, Händler"></label>
+        <label>Tags (durch Komma getrennt)<input id="entryTags" placeholder="z. B. Gareth, Kult, Hinweis"></label>
+        <div class="actions"><button class="primary" type="submit">Eintrag speichern</button><button type="button" id="cancelEntry">Abbrechen</button></div>
+      </form>
+    </div></div>
+    <div class="panel section hidden" id="dayEditor">
+      <h2>Tagesdaten bearbeiten</h2>
+      <form id="dayForm">
+        <div class="form-grid">
+          <label>Ort / Region<input id="dayLocationInput" placeholder="z. B. Weiden, Reichsforst"></label>
+          <label>Wetter (manuell)<select id="dayWeather"><option value="">Nicht festgelegt</option><option>Sonnig</option><option>Bewölkt</option><option>Regen</option><option>Starkregen</option><option>Nebel</option><option>Windig</option><option>Gewitter</option><option>Schnee</option><option>Schneesturm</option><option>Hitze</option><option>Frost</option></select></label>
+          <label>Reise / Tagesnotiz<input id="dayNote" placeholder="z. B. 25 Meilen Richtung Norden"></label>
+        </div>
+        <div class="actions"><button class="primary" type="submit">Tagesdaten speichern</button><button type="button" id="cancelDay">Abbrechen</button></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="tab-journal" class="hidden">
+    <div class="panel">
+      <h2>Alle Einträge · Reisetagebuch & Chronik</h2><p class="muted small">Hier findest du sämtliche Chronikeinträge kampagnenweit, unabhängig vom ausgewählten Kalendertag. Tage mit Einträgen sind im Kalender rot markiert; Quest-Tage ohne Chronikeintrag sind grün markiert.</p>
+      <div class="list-tools"><input id="journalSearch" placeholder="Suche nach Titel, Ort, NSC, Text …"><select id="journalType"><option value="">Alle Eintragstypen</option><option>Spielabend</option><option>Reise</option><option>Quest-Ereignis</option><option>Begegnung</option><option>Notiz</option><option>Geheim (SL)</option></select><button class="primary" id="journalNew">＋ Neuer Eintrag</button></div>
+      <div id="journalList"></div>
+    </div>
+  </section>
+
+  <section id="tab-quests" class="hidden">
+    <div class="layout">
+      <div class="panel"><h2>Quest- und Missionsbuch</h2><div class="list-tools"><input id="questSearch" placeholder="Quest suchen …"><select id="questFilter"><option value="">Alle Status</option><option>Aktiv</option><option>Abgeschlossen</option><option>Gescheitert</option><option>Pausiert</option></select></div><div id="questList"></div></div>
+      <div class="modal-overlay hidden" id="questModal" role="dialog" aria-modal="true" aria-labelledby="questFormTitle"><div class="modal-card"><div class="modal-top"><h2 id="questFormTitle">Quest anlegen</h2><button type="button" id="closeQuest" aria-label="Fenster schließen">✕</button></div>
+        <form id="questForm"><input type="hidden" id="questId">
+          <label>Titel<input id="questTitle" required placeholder="z. B. Das verschwundene Siegel"></label>
+          <div class="form-grid"><label>Status<select id="questStatus"><option>Aktiv</option><option>Pausiert</option><option>Abgeschlossen</option><option>Gescheitert</option></select></label><label>Priorität<select id="questPriority"><option>Normal</option><option>Wichtig</option><option>Dringend</option></select></label></div>
+          <div class="form-grid"><label>Beginn<input id="questStart" placeholder="z. B. 3. Phex 1046 BF"></label><label>Frist / Zieltermin<input id="questDue" placeholder="optional"></label></div>
+          <label>Auftraggeber / Ort<input id="questContact" placeholder="NSC, Ort oder Organisation"></label>
+          <label>Auftrag & Hinweise<textarea id="questDescription" placeholder="Aufgabe, Hinweise, offene Fragen …"></textarea></label>
+          <label>Belohnung / Ergebnis<input id="questReward" placeholder="optional"></label>
+          <div class="actions"><button class="primary" type="submit">Quest speichern</button><button type="button" id="questClear">Neue Quest</button></div>
+        </form>
+      </div></div>
+    </div>
+  </section>
+
+  <section id="tab-travel" class="hidden">
+    <div class="layout">
+      <div class="panel"><h2>Reise- und Zeittracker</h2><p class="muted small">Lege eine Reise an, halte Etappen und Notizen fest und übertrage die geplante Dauer in deine Chronik. Automatische Entfernungs- oder Regelberechnungen sind bewusst noch nicht eingebaut.</p>
+        <form id="travelForm">
+          <label>Reise / Etappe<input id="travelTitle" required placeholder="z. B. Von Gareth nach Wehrheim"></label>
+          <div class="form-grid"><label>Startort<input id="travelFrom" required></label><label>Zielort<input id="travelTo" required></label></div>
+          <div class="form-grid"><label>Startdatum<input id="travelStart" placeholder="z. B. 8. Rondra 1046 BF"></label><label>Dauer in Tagen<input id="travelDays" type="number" min="1" max="999" value="1" required></label></div>
+          <label>Reiseart<select id="travelMode"><option>Zu Fuß</option><option>Reittiere</option><option>Wagen</option><option>Fluss / Schiff</option><option>See / Schiff</option><option>Andere</option></select></label>
+          <label>Notizen / Ereignisse<textarea id="travelNotes" placeholder="Rastplätze, Begegnungen, Schwierigkeiten …"></textarea></label>
+          <div class="actions"><button class="primary" type="submit">Reise speichern</button></div>
+        </form>
+      </div>
+      <div class="panel"><h2>Gespeicherte Reisen</h2><div id="travelList"></div></div>
+    </div>
+  </section>
+  <div class="footer">Für eure Kampagne gemacht · Aventurische Chronik · Lokale Speicherung, JSON-Sicherung jederzeit möglich</div>
+</main>
+<script>
+(() => {
+'use strict';
+const MONTHS=['Praios','Rondra','Efferd','Travia','Boron','Hesinde','Firun','Tsa','Phex','Peraine','Ingerimm','Rahja'];
+const WEEKDAYS=['Windstag','Erdstag','Markttag','Praiostag','Rohalstag','Feuertag','Wassertag'];
+const NAMESLESS='Namenlose Tage';
+const KEY='aventurischeChronik_dsa5_v1';
+const $=id=>document.getElementById(id);
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+const fresh=()=>({schemaVersion:1,meta:{title:'Aventurische Chronik',createdAt:new Date().toISOString()},settings:{calendarBasis:'Zwölfgöttlicher Kalender',moonOffset:0},entries:[],quests:[],days:{},travels:[]});
+let data=load(), selected={year:1046,month:0,day:1}, view={year:1046,month:0}, activeTab='calendar';
+function load(){try{const raw=localStorage.getItem(KEY);if(raw){const p=JSON.parse(raw);if(p&&p.schemaVersion===1)return {...fresh(),...p,settings:{...fresh().settings,...p.settings},entries:Array.isArray(p.entries)?p.entries:[],quests:Array.isArray(p.quests)?p.quests:[],days:p.days||{},travels:Array.isArray(p.travels)?p.travels:[]}}}catch(e){}return fresh()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){alert('Speichern im Browser ist fehlgeschlagen. Bitte exportiere deine Chronik als JSON.')} }
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+function dateText(y,m,d){return d>=31?`${d-30}. Namenlose Tage ${y} BF`:`${d}. ${MONTHS[m]} ${y} BF`}
+function currentKey(){return dateKey(selected.year,selected.month,selected.day)}
+function dayData(y,m,d){return data.days[dateKey(y,m,d)]||{}}
+function entriesFor(y,m,d){return data.entries.filter(e=>e.dateKey===dateKey(y,m,d))}
+function weekIndex(y,m,d){return ((y*365 + m*30 + (d-1))%7+7)%7}
+function moonPhase(y,m,d){ // placeholder phase cycle; intentionally configurable/labelled as estimate
+ const age=(((y*365+m*30+d-1+Number(data.settings.moonOffset||0))%29.53059)+29.53059)%29.53059;
+ if(age<1.85||age>=27.68)return 'Neumond';
+ if(age<5.54)return 'Zunehmende Sichel';
+ if(age<9.22)return 'Erstes Viertel';
+ if(age<12.91)return 'Zunehmender Mond';
+ if(age<16.61)return 'Vollmond';
+ if(age<20.30)return 'Abnehmender Mond';
+ if(age<23.99)return 'Letztes Viertel';
+ return 'Abnehmende Sichel';
+}
+function season(m){if([0,1,2].includes(m))return 'Sommer';if([3,4,5].includes(m))return 'Herbst';if([6,7,8].includes(m))return 'Winter';return 'Frühling'}
+function setTab(tab){activeTab=tab;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));['calendar','journal','quests','travel'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==tab));if(tab==='journal')renderJournal();if(tab==='quests')renderQuests();if(tab==='travel')renderTravels()}
+function renderCalendar(){
+ $('monthTitle').textContent=MONTHS[view.month];$('yearTitle').textContent=view.year+' BF';$('yearInput').value=view.year;
+ const grid=$('calendarGrid');grid.innerHTML=WEEKDAYS.map(w=>`<div class="weekday">${w}</div>`).join('');
+ const offset=weekIndex(view.year,view.month,1);
+ for(let i=0;i<offset;i++)grid.insertAdjacentHTML('beforeend','<div class="day blank"></div>');
+ for(let d=1;d<=30;d++){
+  const key=dateKey(view.year,view.month,d),dd=dayData(view.year,view.month,d),es=data.entries.filter(e=>e.dateKey===key),qs=data.quests.filter(q=>q.startKey===key||q.dueKey===key);
+  const isSel=selected.year===view.year&&selected.month===view.month&&selected.day===d;
+  grid.insertAdjacentHTML('beforeend',`<button class="day ${isSel?'selected':''} ${es.length?'has-entry':''} ${qs.length?'has-quest':''}" data-day="${d}" aria-label="${dateText(view.year,view.month,d)}${es.length?', '+es.length+' Einträge':''}${qs.length?', '+qs.length+' Quest-Ereignisse':''}"><span class="num">${d}</span><span class="marks">${es.length?'<span class="dot"></span>'+es.length+' Eintrag'+(es.length===1?'':'e'):''}${qs.length?' · '+qs.length+' Quest':''}</span>${dd.weather?`<span class="marks">${esc(dd.weather)}</span>`:''}</button>`);
+ }
+ // five intercalary days shown in a separate full-width row after Rahja
+ if(view.month===11){
+  grid.insertAdjacentHTML('beforeend',`<div style="grid-column:1/-1;padding:9px 4px 2px;color:#7c342c;font-weight:bold">Zwischen den Jahren · Namenlose Tage</div>`);
+  for(let d=31;d<=35;d++){const key=dateKey(view.year,11,d),es=data.entries.filter(e=>e.dateKey===key);grid.insertAdjacentHTML('beforeend',`<button class="day special ${selected.year===view.year&&selected.month===11&&selected.day===d?'selected':''}" data-day="${d}"><span class="num">${d-30}</span><span class="moon">☽ Namenlos</span><span class="marks">${es.length?'<span class="dot"></span>'+es.length+' Eintrag':''}</span></button>`)}
+ }
+ grid.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{selected={year:view.year,month:view.month,day:+b.dataset.day};renderCalendar()}));
+ renderSelected();
+}
+function moonGlyph(y,m,d){const p=moonPhase(y,m,d);return p==='Neumond'?'●':p==='Vollmond'?'○':p.includes('Zunehm')?'◔':p.includes('Abnehm')?'◕':p==='Erstes Viertel'?'◐':'◑'}
+function renderSelected(){
+ const {year:y,month:m,day:d}=selected,dd=dayData(y,m,d);
+ $('selectedDateLabel').textContent=dateText(y,m,d);$('weekdayLabel').textContent=d>30?'Zwischen den Jahren':WEEKDAYS[weekIndex(y,m,d)];
+ $('dayType').textContent=d>30?'Namenlose Tage':'Kalendertag';
+ $('moonLabel').textContent=moonGlyph(y,m,d)+' '+moonPhase(y,m,d)+'*';$('seasonLabel').textContent=d>30?'Zwischen den Jahren':season(m);
+ $('weatherLabel').textContent=dd.weather||'Nicht festgelegt';$('locationLabel').textContent=dd.location||'Kein Ort eingetragen';
+ $('dayLocationInput').value=dd.location||'';$('dayWeather').value=dd.weather||'';$('dayNote').value=dd.note||'';
+ const es=entriesFor(y,m,d);$('dayEntries').innerHTML=es.length?es.map(entryHtml).join(''):'<div class="empty">Noch keine Chronikeinträge für diesen Tag.<br>Halte fest, was die Heldengruppe erlebt hat.</div>';
+ const qs=data.quests.filter(q=>q.startKey===currentKey()||q.dueKey===currentKey());$('dayQuests').innerHTML=qs.length?qs.map(questCompactHtml).join(''):'<div class="empty">Keine Quest mit Beginn oder Frist an diesem Tag.</div>';
+ $('entryDate').value=dateText(y,m,d);
+}
+function entryHtml(e){return `<article class="entry"><h4>${esc(e.title)}</h4><div class="entry-meta"><span>${esc(e.dateText||'')}</span><span>${esc(e.location||'Ohne Ortsangabe')}</span><span>${esc(e.type||'Notiz')}</span></div><p>${esc(e.body)}</p>${e.people?`<div class="small"><b>Beteiligte:</b> ${esc(e.people)}</div>`:''}${(e.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}<div class="actions" style="margin-top:8px"><button data-edit-entry="${e.id}">Bearbeiten</button><button class="danger" data-delete-entry="${e.id}">Löschen</button></div></article>`}
+function questCompactHtml(q){return `<div class="quest-card"><h4>${esc(q.title)}</h4><span class="status ${q.status==='Aktiv'?'active':q.status==='Abgeschlossen'?'done':q.status==='Gescheitert'?'failed':''}">${esc(q.status)}</span> ${q.due?`<span class="small muted">Frist: ${esc(q.due)}</span>`:''}<div class="small" style="margin-top:6px">${esc(q.contact||'')}</div></div>`}
+function renderJournal(){const term=$('journalSearch').value.toLowerCase(),type=$('journalType').value;let list=[...data.entries].filter(e=>(!type||e.type===type)&&(!term||[e.title,e.location,e.body,e.people,(e.tags||[]).join(' ')].join(' ').toLowerCase().includes(term))).sort((a,b)=>(b.sortKey||'').localeCompare(a.sortKey||''));$('journalList').innerHTML=list.length?list.map(entryHtml).join(''):'<div class="empty">Keine passenden Einträge gefunden.</div>';wireEntryButtons()}
+function renderQuests(){const term=$('questSearch').value.toLowerCase(),status=$('questFilter').value;let list=[...data.quests].filter(q=>(!status||q.status===status)&&(!term||[q.title,q.contact,q.description,q.reward].join(' ').toLowerCase().includes(term))).sort((a,b)=>({Dringend:0,Wichtig:1,Normal:2}[a.priority]??2)-({Dringend:0,Wichtig:1,Normal:2}[b.priority]??2));$('questList').innerHTML=list.length?list.map(q=>`<article class="quest-card"><div class="detail-head"><h4>${esc(q.title)}</h4><span class="status ${q.status==='Aktiv'?'active':q.status==='Abgeschlossen'?'done':q.status==='Gescheitert'?'failed':''}">${esc(q.status)}</span></div><div class="entry-meta"><span>${esc(q.priority||'Normal')}</span>${q.start?`<span>Beginn: ${esc(q.start)}</span>`:''}${q.due?`<span>Frist: ${esc(q.due)}</span>`:''}</div>${q.contact?`<p class="small"><b>Auftraggeber / Ort:</b> ${esc(q.contact)}</p>`:''}${q.description?`<p>${esc(q.description)}</p>`:''}${q.reward?`<p class="small"><b>Belohnung / Ergebnis:</b> ${esc(q.reward)}</p>`:''}<div class="actions"><button data-edit-quest="${q.id}">Bearbeiten</button><button data-quest-status="${q.id}" data-status="Abgeschlossen">Abschließen</button><button class="danger" data-delete-quest="${q.id}">Löschen</button></div></article>`).join(''):'<div class="empty">Noch keine Quests angelegt.</div>';wireQuestButtons()}
+function renderTravels(){$('travelList').innerHTML=data.travels.length?[...data.travels].reverse().map(t=>`<article class="entry"><h4>${esc(t.title)}</h4><div class="entry-meta"><span>${esc(t.from)} → ${esc(t.to)}</span><span>${esc(t.start||'Startdatum offen')}</span><span>${t.days} Tag(e)</span><span>${esc(t.mode)}</span></div>${t.notes?`<p>${esc(t.notes)}</p>`:''}<div class="actions"><button data-travel-apply="${t.id}">Reisedauer in Chronik übernehmen</button><button class="danger" data-travel-delete="${t.id}">Löschen</button></div></article>`).join(''):'<div class="empty">Noch keine Reisen geplant.</div>';document.querySelectorAll('[data-travel-delete]').forEach(b=>b.onclick=()=>{data.travels=data.travels.filter(t=>t.id!==b.dataset.travelDelete);save();renderTravels()});document.querySelectorAll('[data-travel-apply]').forEach(b=>b.onclick=()=>{const t=data.travels.find(x=>x.id===b.dataset.travelApply);if(!t)return;const entry={id:uid(),dateKey:currentKey(),dateText:dateText(selected.year,selected.month,selected.day),sortKey:dateKey(selected.year,selected.month,selected.day),title:t.title,location:`${t.from} → ${t.to}`,type:'Reise',body:`Reiseart: ${t.mode}\\nDauer: ${t.days} Tag(e)\\nStartdatum: ${t.start||'nicht angegeben'}\\n\\n${t.notes||''}`,people:'',tags:['Reise']};data.entries.push(entry);save();setTab('calendar');renderCalendar();alert('Reise als Chronikeintrag für den ausgewählten Kalendertag angelegt. Bitte Reisedauer und Enddatum bei Bedarf ergänzen.');})}
+function wireEntryButtons(){document.querySelectorAll('[data-edit-entry]').forEach(b=>b.onclick=()=>editEntry(b.dataset.editEntry));document.querySelectorAll('[data-delete-entry]').forEach(b=>b.onclick=()=>{if(confirm('Diesen Tagebucheintrag löschen?')){data.entries=data.entries.filter(e=>e.id!==b.dataset.deleteEntry);save();renderAll()}})}
+function wireQuestButtons(){document.querySelectorAll('[data-edit-quest]').forEach(b=>b.onclick=()=>editQuest(b.dataset.editQuest));document.querySelectorAll('[data-delete-quest]').forEach(b=>b.onclick=()=>{if(confirm('Diese Quest löschen?')){data.quests=data.quests.filter(q=>q.id!==b.dataset.deleteQuest);save();renderAll()}});document.querySelectorAll('[data-quest-status]').forEach(b=>b.onclick=()=>{const q=data.quests.find(q=>q.id===b.dataset.questStatus);if(q){q.status=b.dataset.status;save();renderQuests();renderCalendar()}})}
+function editEntry(id){const e=data.entries.find(x=>x.id===id);if(!e)return;setTab('calendar');$('entryModal').classList.remove('hidden');$('entryFormTitle').textContent='Chronikeintrag bearbeiten';$('entryId').value=e.id;$('entryDate').value=e.dateText||'';$('entryTitle').value=e.title;$('entryLocation').value=e.location||'';$('entryType').value=e.type||'Notiz';$('entryBody').value=e.body;$('entryPeople').value=e.people||'';$('entryTags').value=(e.tags||[]).join(', ');$('entryTitle').focus()}
+function editQuest(id){const q=data.quests.find(x=>x.id===id);if(!q)return;$('questId').value=q.id;$('questTitle').value=q.title;$('questStatus').value=q.status;$('questPriority').value=q.priority||'Normal';$('questStart').value=q.start||'';$('questDue').value=q.due||'';$('questContact').value=q.contact||'';$('questDescription').value=q.description||'';$('questReward').value=q.reward||'';$('questFormTitle').textContent='Quest bearbeiten';$('questModal').classList.remove('hidden');$('questTitle').focus()}
+function renderAll(){renderCalendar();if(activeTab==='journal')renderJournal();if(activeTab==='quests')renderQuests();if(activeTab==='travel')renderTravels()}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+$('prevMonth').onclick=()=>{view.month--;if(view.month<0){view.month=11;view.year--}renderCalendar()};
+$('nextMonth').onclick=()=>{view.month++;if(view.month>11){view.month=0;view.year++}renderCalendar()};
+$('yearInput').onchange=()=>{view.year=Math.max(1,Math.min(9999,Number($('yearInput').value)||1046));selected.year=view.year;renderCalendar()};
+$('goToday').onclick=()=>{selected={year:view.year,month:view.month,day:1};renderCalendar()};
+$('newEntryBtn').onclick=$('journalNew').onclick=()=>{setTab('calendar');$('entryForm').reset();$('entryId').value='';$('entryFormTitle').textContent='Chronikeintrag anlegen';$('entryDate').value=dateText(selected.year,selected.month,selected.day);$('entryModal').classList.remove('hidden');$('entryTitle').focus()};
+$('cancelEntry').onclick=()=>{$('entryModal').classList.add('hidden')};
+$('entryForm').onsubmit=e=>{e.preventDefault();const id=$('entryId').value||uid(),dt=$('entryDate').value.trim();let item={id,dateText:dt,dateKey:currentKey(),sortKey:currentKey(),title:$('entryTitle').value.trim(),location:$('entryLocation').value.trim(),type:$('entryType').value,body:$('entryBody').value.trim(),people:$('entryPeople').value.trim(),tags:$('entryTags').value.split(',').map(s=>s.trim()).filter(Boolean)};const old=data.entries.find(x=>x.id===id);if(old){item.dateKey=old.dateKey;item.sortKey=old.sortKey;data.entries=data.entries.map(x=>x.id===id?item:x)}else data.entries.push(item);save();$('entryModal').classList.add('hidden');renderAll();};
+function openQuestForm(){ setTab('quests');$('questForm').reset();$('questId').value='';$('questStart').value=dateText(selected.year,selected.month,selected.day);$('questFormTitle').textContent='Quest anlegen';$('questModal').classList.remove('hidden');$('questTitle').focus(); }
+$('closeEntry').onclick=$('cancelEntry').onclick=()=>{$('entryModal').classList.add('hidden')};
+$('closeQuest').onclick=()=>{$('questModal').classList.add('hidden')};
+$('entryModal').addEventListener('click',e=>{if(e.target===$('entryModal'))$('entryModal').classList.add('hidden')});$('questModal').addEventListener('click',e=>{if(e.target===$('questModal'))$('questModal').classList.add('hidden')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('entryModal').classList.add('hidden');$('questModal').classList.add('hidden')}});
+$('editDayBtn').onclick=()=>$('dayEditor').classList.toggle('hidden');$('cancelDay').onclick=()=>$('dayEditor').classList.add('hidden');
+$('dayForm').onsubmit=e=>{e.preventDefault();data.days[currentKey()]={location:$('dayLocationInput').value.trim(),weather:$('dayWeather').value,note:$('dayNote').value.trim()};save();$('dayEditor').classList.add('hidden');renderAll()};
+$('addQuestBtn').onclick=()=>openQuestForm();
+$('questClear').onclick=()=>openQuestForm();
+$('questForm').onsubmit=e=>{e.preventDefault();const id=$('questId').value||uid(),start=$('questStart').value.trim(),due=$('questDue').value.trim();const q={id,title:$('questTitle').value.trim(),status:$('questStatus').value,priority:$('questPriority').value,start,due,startKey:start===dateText(selected.year,selected.month,selected.day)?currentKey():'',dueKey:'',contact:$('questContact').value.trim(),description:$('questDescription').value.trim(),reward:$('questReward').value.trim()};const old=data.quests.find(x=>x.id===id);if(old){q.startKey=old.startKey;q.dueKey=old.dueKey;data.quests=data.quests.map(x=>x.id===id?q:x)}else data.quests.push(q);save();$('questForm').reset();$('questId').value='';$('questFormTitle').textContent='Quest anlegen';$('questModal').classList.add('hidden');renderAll()};
+$('journalSearch').oninput=renderJournal;$('journalType').onchange=renderJournal;$('questSearch').oninput=renderQuests;$('questFilter').onchange=renderQuests;
+$('travelForm').onsubmit=e=>{e.preventDefault();data.travels.push({id:uid(),title:$('travelTitle').value.trim(),from:$('travelFrom').value.trim(),to:$('travelTo').value.trim(),start:$('travelStart').value.trim(),days:Number($('travelDays').value),mode:$('travelMode').value,notes:$('travelNotes').value.trim()});save();$('travelForm').reset();$('travelDays').value=1;renderTravels()};
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`aventurische-chronik-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url)};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const imported=JSON.parse(await file.text());if(!imported||imported.schemaVersion!==1||!Array.isArray(imported.entries)||!Array.isArray(imported.quests)||!imported.days||!Array.isArray(imported.travels))throw new Error('Das ist keine unterstützte Chronik-JSON-Datei.');if(!confirm('Import ersetzt die aktuell gespeicherte Chronik. Exportiere zuerst eine Sicherung, wenn du die alten Daten behalten möchtest. Fortfahren?'))return;data={...fresh(),...imported};save();renderAll();alert('Chronik erfolgreich importiert.')}catch(err){alert('Import fehlgeschlagen: '+err.message)}finally{$('importFile').value=''}};
+renderAll();
+})();
+</script>
+</body>
+</html>
